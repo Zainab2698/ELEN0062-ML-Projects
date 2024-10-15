@@ -20,56 +20,37 @@ from sklearn.model_selection import cross_val_score
 # Put your functions here
 def decision_tree(total_points, training_points, depths):
     #Here the total points of DS sample total_points = 3000 & the number of training points is 1000
+    iterations = 5
+    accuracies = np.empty((iterations, len(depths)))
+    random_state_seeds = [97, 82, 42, 16, 76]
+    for iteration in range(iterations):
+        # Define the dataset
+        x, y = make_dataset(n_points=total_points, random_state=random_state_seeds[iteration])
 
-    # Define the dataset
-    x, y = make_dataset(n_points=total_points)
+        for i, depth in enumerate(depths):
+            tree_clf = DecisionTreeClassifier(max_depth=depth)
+            tree_clf.fit(x[:training_points], y[:training_points])
 
-    x_training = x[:training_points]
-    y_training = y[:training_points]
-    x_testing = x[training_points:]
-    y_testing = y[training_points:]
+            y_predict = tree_clf.predict(x[training_points:])
 
-    
+            accuracies[iteration, i] = accuracy_score(y[training_points:], y_predict)
 
     # To store results of the avg accuracy and the std deviation
-    average_accuracies = []
-    std_devs = []
+    average_accuracies = accuracies.mean(axis=0)
+    std_devs = accuracies.std(axis=0)
 
     # Hyperparameter value to test (max_depth)
     # Loop over each max_depth value
-    for depth in depths:
+    for i, depth in enumerate(depths):
+        print(f"Max Depth: {depth} | Avg Accuracy: {average_accuracies[i]:.4f} | Std Dev: {std_devs[i]:.4f}")
 
-        # Initialize the classifier with the current max_depth
-        tree_clf = DecisionTreeClassifier(max_depth=depth)
-
-        tree_clf.fit(x_training, y_training)
-
-        # Perform 5-fold cross-validation and get accuracy for each fold
-        accuracies = cross_val_score(tree_clf, x, y, cv=5, scoring='accuracy')
-    
-        # Calculate mean and standard deviation of the accuracies
-        avg_accuracy = np.mean(accuracies)
-        std_dev = np.std(accuracies)
-    
-        # Store the results
-        average_accuracies.append(avg_accuracy)
-        std_devs.append(std_dev)
-
-        # Visualize the decision boundary
+        
         if depth is None:
             fname = "decision_boundary_depth_None"  # No formatting needed here
         else:
             fname = f"decision_boundary_depth_{depth}"  # Correctly using f-string
 
-        plot_boundary(fname, fitted_estimator=tree_clf, X=x_testing, y=y_testing, title="Decision Tree Boundary")
-
-    
-        # Print the result for the max_depth
-        print(f"Max Depth: {depth} | Avg Accuracy: {avg_accuracy:.4f} | Std Dev: {std_dev:.4f}")
-
-    # Printing the Results of Accuracy and Deviation
-    print("Average Accuracies:", average_accuracies)
-    print("Standard Deviations:", std_devs)
+        plot_boundary(fname, fitted_estimator=tree_clf, X=x[training_points:], y=y[training_points:], title="Decision Tree Boundary")
 
 
 if __name__ == "__main__":
