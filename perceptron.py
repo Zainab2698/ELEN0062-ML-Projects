@@ -28,8 +28,7 @@ def sigmoidDerivate(x):
 
 def gradient(X, y, w):
     gradient = np.empty(3)
-    gradient[0] = (-y/(sigmoid(w[0]+w[1]*X[0]+w[2]*X[1])))*sigmoidDerivate(w[0]+w[1]*X[0]+w[2]*X[1])
-    gradient[0] += ((1-y)/(1-sigmoid(w[0]+w[1]*X[0]+w[2]*X[1])))*sigmoidDerivate(w[0]+w[1]*X[0]+w[2]*X[1])
+    gradient[0] = -y + 2*sigmoid(w[0]+w[1]*X[0]+w[2]*X[1]) - y*sigmoid(w[0]+w[1]*X[0]+w[2]*X[1])
     gradient[1] = gradient[0]*X[0]
     gradient[2] = gradient[0]*X[1]
     return gradient
