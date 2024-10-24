@@ -42,11 +42,11 @@ def Q2():
     print("average accuracy =", average) 
     print("standard deviation =", std_deviations)
 
-def Q4():
+def Q4(irrelevant):
     n = 1
     max_n = 0
     max_score = 0
-    X,y = make_dataset(3000, random_state=100)
+    X,y = make_dataset(3000, random_state=100, n_irrelevant=irrelevant)
     while n < 500:
         clf =  KNeighborsClassifier(n_neighbors=n)
         score = cross_val_score(clf, X[:1000], y[:1000], cv=5).mean()
@@ -65,11 +65,12 @@ def Q4():
         accuracies[generation] = accuracy_score(y[1000:], y_prediction)
     average = accuracies.mean()
     std = accuracies.std()
-    print("\nTuned parameter =", max_n)
-    print("average accuracy =", average) 
-    print("standard deviation =", std)
+    print("\nTuned parameter = %d with %d irrelevant data" % (max_n, irrelevant))
+    print("average accuracy = ", average) 
+    print("standard deviation = ", std)
 
 if __name__ == "__main__":
     Q1()
     Q2()
-    Q4()
+    Q4(irrelevant = 0)
+    Q4(irrelevant = 200)
