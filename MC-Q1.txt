@@ -1,0 +1,8 @@
+Method Comparison
+
+Cross-validation is a robust method for tuning hyperparameters- in this context; max_depth for Decision Trees, n_neighbors for K-Nearest Neighbors, and η for Perceptron-, it allows us to make use of the learning set efficiently. By averaging the model’s performance across multiple folds, we reduce the risk of overfitting to a particular subset of the data, making sure the chosen hyperparameters adapt well to out-of-sample data.
+ Cross-Validation Process:
+•	We would split the learning set into k-folds (commonly k=5 or k=10).
+•	For each hyperparameter setting, the model will be trained on k−1 folds and validated on the remaining fold.
+•	This process is repeated k times, with a different fold being used for validation each time.
+•	The average performance (e.g., accuracy) across the k validation rounds will be calculated, and the hyperparameter setting that produces the best average performance will be selected.
