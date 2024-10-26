@@ -1,0 +1,196 @@
+\documentclass[acmconf,nonacm=true]{acmart}
+\authorsaddresses{}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{cite}
+\usepackage{float}
+\sethlcolor{yellow} 
+\usepackage{amsmath}
+\begin{document}
+
+\title{ELEN0062 - Introduction to Machine Learning}
+\subtitle{Project 1 - Classification Algorithms}
+
+% Enter your names here, along with your student IDs.
+\author{FAINGNAERT Théo (\texttt{s191662})}
+\author{ZIANI Zaynab (\texttt{s2403973})}
+\author{Author Name 3 (\texttt{s3})}
+
+\maketitle
+
+\section{Decision Trees}
+
+\begin{table}[H]
+    \centering
+    \caption{Accuracy and Standard Deviation of Decision Trees}
+    \begin{tabular}{|c|c|c|}
+    \hline
+     max\_depth & Average Accuracy & Standard Deviation \\
+    \hline
+    1 & 85.59\%&  0.0141\\
+    2 & 89.57\%&  0.0094\\
+    4 & 91.72\%&  0.0029\\
+    8 & 89.27\%&  0.0098\\
+    None & 88.58\%&  0.0130\\
+    \hline
+    \end{tabular}
+\end{table}
+comment on the test set of accuracies: 
+As the max depth value increases, the decision boundary becomes more flexible and accuarcy improves up to a level, after which, further depths might lead to test accuracies decreasing slightly.
+\textbf{1. Observe how the decision boundary is affected by tree complexity}
+\textbf{(a) Illustrate and explain the decision boundary for each hyperparameter value.}
+\begin{enumerate}
+    \textbf{a.  Illustrate and explain the decision boundary for each hyperparameter
+value.}
+\end{enumerate}
+    i. Illustration for each depth value can be found in the appendix
+    \textbf{ii. Explanation of the decision boundary for each hyperparameter value.}
+    \begin{itemize}
+        \item \textbf{Depth = 1: }The decision boundary is a simple straight line because the decision tree makes an axis-aligned decision, dividing the data space in 2 regions. The classification is oversimplified and most likely underfitted.
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Depth = 2 :}  With this 1 additional split, the model is more flexible, however, it remains relatively still linear and simplistic.
+    \end{itemize}
+   \begin{itemize}
+       \item \textbf{ Depth = 4: }At for levels of splits, the decision boundary becomes non-linear, resulting in the decision tree adapting more to the structure of the data.
+   \end{itemize}
+   \begin{itemize}
+       \item \textbf{Depth = 8: } In this case the decision boundaries are very detailed and complex, we see (in the figure) that it adapts to "almost" every detail of the data even the small variations or ouliers in the data set.
+       \item \textbf{Depth = None: } The model does not classify the data as expected, but over-fitting and failing to recognize some of the orange dots as orange, and same goes for some of the blue dots infiltrated amongst the orange ones
+    \end{itemize}
+b.  \textbf{Discuss when the model is clearly underfitting/overfitting and detail your evidence for each claim.}
+    i. When the model is too simple (depth = 1) the decision boundary doesn't adapt well to the data and the accuracy on both training and testing data sets is low which idicates underfitting
+    ii. At max-depth = none, the test accuracy is not optimal, even though the decision boundary is complex
+    \textbf{c. Explain why the model is more confident when max\_depth is the largest} 
+    The model is more confident as it over-fits the \textit{training data}, assigning each data point to a pure leaf that classifies it. This confidence however, as it fits perfectly to the training data won't adapt well enough to a new one (testing set) and the model will probably learn not relevant nuances (noise).  
+
+\section{k-Nearest Neighbors}
+
+\begin{enumerate}
+    \item \textbf{Observe how the decision boundary is affected by the number of neighbors.}
+\end{enumerate}
+    \begin{enumerate}
+    \item See appendix for figures.
+    \item 
+        \begin{enumerate}
+            \item When $n\_neighbors = 1$, the decision boundary illustrates a classical case of over-fitting. The algorithm has learned every noise data, creating islands in the plot. For $n\_neighbors = 5$, islands are still fairly visible.
+            \item For $n\_neighbors = 50\ \&\ 100$, the decision boundary is acceptable. It follows a smooth path between the two groups.
+        \end{enumerate}
+    \item For $n\_neighbors = 500$, the algorithm is clearly under-fitting. The class fails to predict the blue dots because they are a minority, thus it will most likely find more orange dots as neighbors. This effect can also be explained by the fact that when $n$ approaches the training size (1000 in our case), the confidence will converge toward the orange dots' proportion.
+    \end{enumerate}
+    
+The low standard deviation shows that the accuracy is consistent between each generation.\\
+The variance-bias tradeoff is clearly visible, with the accuracy increasing with $n$ before decreasing at $n=100$. The class is overfitting at $n=1$ and underfitting at $n=500$.
+
+    \begin{table}[H]
+    \centering
+    \caption{Accuracy and Standard Deviation of k-Nearest Neighbors}
+    \begin{tabular}{|c|c|c|}
+    \hline
+     neighbors & Average Accuracy & Standard Deviation \\
+    \hline
+    1 & 88.82\% & 0.0114 \\
+    5 & 91.90\% & 0.0048 \\
+    50 & 92.66\% & 0.0027 \\
+    100 & 92.60\% & 0.0024 \\
+    500 & 80.41\% & 0.0567 \\
+    \hline
+    \end{tabular}
+    \end{table}
+
+\section{Perceptron}
+\textbf{1) Derive the mathematical expression of the gradient}
+$$
+\mathcal{L}(\mathbf{x}, y, \mathbf{w})=-y \log (\hat{f}(\mathbf{x} ; \mathbf{w}))-(1-y) \log (1-\hat{f}(\mathbf{x} ; \mathbf{w}))
+$$
+Deriving by the prediction function,
+\begin{equation*} \label{1}
+    \frac{\partial \mathcal{L}}{\partial \hat{f}(\mathbf{x} ; \mathbf{w})}=\frac{y}{\hat{f}(\mathbf{x} ; \mathbf{w})}+\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})} \tag{1}
+\end{equation*}
+Knowing that the derivative of the sigmoid function is
+\begin{equation*}
+\frac{d\sigma (x)}{d(x)} = \sigma (x)\cdot (1-\sigma(x))
+\end{equation*}
+We can calculate the derivative,
+\begin{equation} \label{2}
+\frac{\partial \hat{f}(\mathbf{x} ; \mathbf{w})}{\partial w_j}=\hat{f}(\mathbf{x} ; \mathbf{w})(1-\hat{f}(\mathbf{x} ; \mathbf{w})) x_j \tag{2}
+\end{equation}
+Applying the chain rule, we get
+\begin{equation*} \label{3}
+\frac{\partial \mathcal{L}}{\partial w_j}=\frac{\partial \mathcal{L}}{\partial \hat{f}(\mathbf{x} ; \mathbf{w})} \cdot \frac{\partial \hat{f}(\mathbf{x} ;\mathbf{w})}{\partial w_{j}} \tag{3}
+\end{equation*}
+Replacing the fractions in equation \ref{3} by equations \ref{1} and \ref{2}, we get
+\begin{equation*}
+\frac{\partial \mathcal{L}}{\partial w_j}=\left(\frac{y}{\hat{f}(\mathbf{x} ; \mathbf{w})}+\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})}\right) \cdot \hat{f}(\mathbf{x} ; \mathbf{w})(1-\hat{f}(\mathbf{x} ; \mathbf{w})) x_j
+\end{equation*}
+Finally, by distributing the denominators in parenthesis and simplifying, we get
+\begin{equation*}
+\frac{\partial \mathcal{L}}{\partial w_j}=(y+\hat{f}(\mathbf{x} ; \mathbf{w})-2 y \hat{f}(\mathbf{x} ; \mathbf{w})) x_j
+\end{equation*}
+
+
+\section{Appendix}
+
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{dt/decision_boundary_depth_1.pdf}
+    \caption{max\_depth = 1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{dt/decision_boundary_depth_2.pdf}
+    \caption{max\_depth = 2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{dt/decision_boundary_depth_4.pdf}
+    \caption{max\_depth = 4}
+\end{figure}
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{dt/decision_boundary_depth_8.pdf}
+    \caption{max\_depth = 8}
+\end{figure}
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{dt/decision_boundary_depth_None.pdf}
+    \caption{max\_depth = None}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{knn/knn_1.pdf}
+    \caption{n = 1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{knn/knn_5.pdf}
+    \caption{n = 5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{knn/knn_50.pdf}
+    \caption{n = 50}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{knn/knn_100.pdf}
+    \caption{n = 100}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{knn/knn_500.pdf}
+    \caption{n = 500}
+\end{figure}
+
+\end{document}
