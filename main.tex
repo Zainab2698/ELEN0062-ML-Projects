@@ -135,7 +135,34 @@ Finally, by distributing the denominators in parenthesis and simplifying, we get
     	For each hyperparameter setting, the model will be trained on k-1 folds and validated on the remaining fold.
     	This process is repeated k times, with a different fold being used for validation each time.
     	The average performance (e.g., accuracy) across the k validation rounds will be calculated, and the hyperparameter setting that produces the best average performance will be selected.
-        
+    \item
+\begin{enumerate}
+    \item 
+    \item \textbf{K-nearest neighbors} displays a 0.3\% loss of accuracy.\\
+    This is because Knn is based on average distance thus the likelihood that noisy points consistently dominate the k-nearest neighbors of any given point is low.\\
+    Also, we can see the parameter $n$ lowering to 11.\\
+    The effect of the noisy points diminishes with $n$ diminishing because they are likely to be outnumbered by correctly labeled data in the majority of neighborhoods.\\
+    Knn is high in ranking in case of noisy data.
+    \item 
+
+
+\end{enumerate}
+\begin{table}[H]
+    \centering
+    \caption{Hyperparameter, Accuracy and Standard Deviation of methods}
+    \begin{tabular}{|c||c|c|c||c|c|c|}
+    \hline
+    \multicolumn{1}{|c||}{} &\multicolumn{3}{c||}{No noise} & \multicolumn{3}{c|}{Noisy} \\
+    \hline
+    Method & Tuned Parameter & Average Accuracy & Standard Deviation & Tuned Parameter & Average Accuracy & Standard Deviation\\
+    \hline
+    dt & 85.59\% & 0.0141 & 85.59\% & 0.0141 & 85.59\% & 0.0141\\
+    knn & n=44 & 92.6\% & 0.0012 & n=11 & 92.3\% & 0.0018\\
+    perceptron & 91.72\% & 0.0029 & 85.59\% & 0.0141 & 85.59\% & 0.0141\\
+    \hline
+    \end{tabular}
+\end{table}
+
 \end{enumerate}
 
 
