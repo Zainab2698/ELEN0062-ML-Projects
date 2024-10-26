@@ -40,11 +40,9 @@ comment on the test set of accuracies:
 As the max depth value increases, the decision boundary becomes more flexible and accuarcy improves up to a level, after which, further depths might lead to test accuracies decreasing slightly.
 \textbf{1. Observe how the decision boundary is affected by tree complexity}
 \textbf{(a) Illustrate and explain the decision boundary for each hyperparameter value.}
-\begin{enumerate}
-    \textbf{a.  Illustrate and explain the decision boundary for each hyperparameter
-value.}
-\end{enumerate}
-    i. Illustration for each depth value can be found in the appendix
+
+\textbf{i. Illustration for each depth value can be found in the appendix}
+\newline
     \textbf{ii. Explanation of the decision boundary for each hyperparameter value.}
     \begin{itemize}
         \item \textbf{Depth = 1: }The decision boundary is a simple straight line because the decision tree makes an axis-aligned decision, dividing the data space in 2 regions. The classification is oversimplified and most likely underfitted.
@@ -67,9 +65,6 @@ b.  \textbf{Discuss when the model is clearly underfitting/overfitting and detai
 
 \section{k-Nearest Neighbors}
 
-\begin{enumerate}
-    \item \textbf{Observe how the decision boundary is affected by the number of neighbors.}
-\end{enumerate}
     \begin{enumerate}
     \item See appendix for figures.
     \item 
@@ -106,7 +101,7 @@ $$
 $$
 Deriving by the prediction function,
 \begin{equation*} \label{1}
-    \frac{\partial \mathcal{L}}{\partial \hat{f}(\mathbf{x} ; \mathbf{w})}=\frac{y}{\hat{f}(\mathbf{x} ; \mathbf{w})}+\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})} \tag{1}
+    \frac{\partial \mathcal{L}}{\partial \hat{f}(\mathbf{x} ; \mathbf{w})}=\frac{-y}{\hat{f}(\mathbf{x} ; \mathbf{w})}-\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})} \tag{1}
 \end{equation*}
 Knowing that the derivative of the sigmoid function is
 \begin{equation*}
@@ -122,17 +117,29 @@ Applying the chain rule, we get
 \end{equation*}
 Replacing the fractions in equation \ref{3} by equations \ref{1} and \ref{2}, we get
 \begin{equation*}
-\frac{\partial \mathcal{L}}{\partial w_j}=\left(\frac{y}{\hat{f}(\mathbf{x} ; \mathbf{w})}+\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})}\right) \cdot \hat{f}(\mathbf{x} ; \mathbf{w})(1-\hat{f}(\mathbf{x} ; \mathbf{w})) x_j
+\frac{\partial \mathcal{L}}{\partial w_j}=\left(\frac{-y}{\hat{f}(\mathbf{x} ; \mathbf{w})}-\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})}\right) \cdot \hat{f}(\mathbf{x} ; \mathbf{w})(1-\hat{f}(\mathbf{x} ; \mathbf{w})) x_j
 \end{equation*}
 Finally, by distributing the denominators in parenthesis and simplifying, we get
 \begin{equation*}
 \frac{\partial \mathcal{L}}{\partial w_j}=(y+\hat{f}(\mathbf{x} ; \mathbf{w})-2 y \hat{f}(\mathbf{x} ; \mathbf{w})) x_j
 \end{equation*}
 
+\section{Method comparison}
+\begin{enumerate}
+    \item Cross-validation is a robust method for tuning hyperparameters. \\
+     In this context, max\_depth for Decision Trees, n\_neighbors for K-Nearest Neighbors, and $\eta$ for Perceptron,\\
+     it allows us to make use of the learning set efficiently.
+     By averaging the model's performance across multiple folds, we reduce the risk of overfitting to a particular subset of the data, making sure the chosen hyperparameters adapt well to out-of-sample data.\\
+     Cross-Validation Process:
+    	We would split the learning set into k-folds (commonly k=5 or k=10).
+    	For each hyperparameter setting, the model will be trained on k-1 folds and validated on the remaining fold.
+    	This process is repeated k times, with a different fold being used for validation each time.
+    	The average performance (e.g., accuracy) across the k validation rounds will be calculated, and the hyperparameter setting that produces the best average performance will be selected.
+        
+\end{enumerate}
+
 
 \section{Appendix}
-
-
 \begin{figure}[H]
     \centering  
     \includegraphics[width=0.75\linewidth]{dt/decision_boundary_depth_1.pdf}
