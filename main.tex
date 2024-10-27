@@ -143,7 +143,11 @@ Finally, by distributing the denominators in parenthesis and simplifying, we get
     	The average performance (e.g., accuracy) across the k validation rounds will be calculated, and the hyperparameter setting that produces the best average performance will be selected.
     \item
 \begin{enumerate}
-    \item 
+    \item \textbf{Decision Tree}:\\
+    Optimal results are obtained when the hyperparameter max depth of the decision tree reaches 4.\\
+    The standard deviation is low at 0.00298, which shows a consistency of performance that gets a litte bit distorted when the 200 data points are added and the standard deviation increases to 0.0074.\\
+    Adding irrelevant features in general to a model makes the latter shallower and reduces down accuracy. However, in the case of the decision tree, even with the noise, the performance of the model remains robust and the accuracy only dropped moderately.\\
+    The optimal max depth with 200 irrelevant features (noise) introduced to the dataset is 2. the reason why the depth of processing isn't as deep, is to prevent the model from overfitting. The deeper the tree would go, the more it would attempt to fit to the noisy patterns implying a deterioration in performance.
     \item \textbf{K-nearest neighbors} displays only a 0.3\% loss of accuracy.\\
     This is because Knn is based on average distance thus the likelihood that noisy points consistently dominate the k-nearest neighbors of any given point is low.\\
     Also, we can see the parameter $n$ lowering to 11.\\
@@ -162,7 +166,7 @@ Finally, by distributing the denominators in parenthesis and simplifying, we get
     \hline
     Method & Tuned Parameter & Average Accuracy & Standard Deviation & Tuned Parameter & Average Accuracy & Standard Deviation\\
     \hline
-    dt & 85.59\% & 0.0141 & 85.59\% & 0.0141 & 85.59\% & 0.0141\\
+    dt & 4 & 91.67\% & 0.0029 & 2 & 89.79\% & 0.0074\\
     knn & n=44 & 92.6\% & 0.0012 & n=11 & 92.3\% & 0.0018\\
     perceptron & 91.72\% & 0.0029 & 85.59\% & 0.0141 & 85.59\% & 0.0141\\
     \hline
