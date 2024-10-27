@@ -15,7 +15,7 @@
 % Enter your names here, along with your student IDs.
 \author{FAINGNAERT Théo (\texttt{s191662})}
 \author{ZIANI Zaynab (\texttt{s2403973})}
-\author{Author Name 3 (\texttt{s3})}
+\author{Author RULMONT Quentin (\texttt{s194355})}
 
 \maketitle
 
@@ -102,34 +102,57 @@ The variance-bias tradeoff is clearly visible, with the accuracy increasing with
 
 \section{Perceptron}
 \textbf{1) Derive the mathematical expression of the gradient}
+The loss function is defined as:
 $$
 \mathcal{L}(\mathbf{x}, y, \mathbf{w})=-y \log (\hat{f}(\mathbf{x} ; \mathbf{w}))-(1-y) \log (1-\hat{f}(\mathbf{x} ; \mathbf{w}))
 $$
-Deriving by the prediction function,
-\begin{equation*} \label{1}
-    \frac{\partial \mathcal{L}}{\partial \hat{f}(\mathbf{x} ; \mathbf{w})}=\frac{-y}{\hat{f}(\mathbf{x} ; \mathbf{w})}-\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})} \tag{1}
-\end{equation*}
-Knowing that the derivative of the sigmoid function is
-\begin{equation*}
-\frac{d\sigma (x)}{d(x)} = \sigma (x)\cdot (1-\sigma(x))
-\end{equation*}
-We can calculate the derivative,
-\begin{equation} \label{2}
-\frac{\partial \hat{f}(\mathbf{x} ; \mathbf{w})}{\partial w_j}=\hat{f}(\mathbf{x} ; \mathbf{w})(1-\hat{f}(\mathbf{x} ; \mathbf{w})) x_j \tag{2}
-\end{equation}
-Applying the chain rule, we get
-\begin{equation*} \label{3}
-\frac{\partial \mathcal{L}}{\partial w_j}=\frac{\partial \mathcal{L}}{\partial \hat{f}(\mathbf{x} ; \mathbf{w})} \cdot \frac{\partial \hat{f}(\mathbf{x} ;\mathbf{w})}{\partial w_{j}} \tag{3}
-\end{equation*}
-Replacing the fractions in equation \ref{3} by equations \ref{1} and \ref{2}, we get
-\begin{equation*}
-\frac{\partial \mathcal{L}}{\partial w_j}=\left(\frac{-y}{\hat{f}(\mathbf{x} ; \mathbf{w})}-\frac{1-y}{1-\hat{f}(\mathbf{x} ; \mathbf{w})}\right) \cdot \hat{f}(\mathbf{x} ; \mathbf{w})(1-\hat{f}(\mathbf{x} ; \mathbf{w})) x_j
-\end{equation*}
-Finally, by distributing the denominators in parenthesis and simplifying, we get
-\begin{equation*}
-\frac{\partial \mathcal{L}}{\partial w_j}=(y+\hat{f}(\mathbf{x} ; \mathbf{w})-2 y \hat{f}(\mathbf{x} ; \mathbf{w})) x_j
-\end{equation*}
+Where
+$$\hat{f}(\mathbf{x} ; \mathbf{w}) = \sigma(w_0 + \sum^{p}_{j=1}w_j x_j)$$
+and $\sigma(x) = \frac{1}{1+e^{-x}}$ is a sigmoid. In this case, p = 2.\\
+Deriving $\mathcal{L}(\mathbf{x}, y, \mathbf{w})$, we obtain:
+\begin{align}
+    \frac{\partial \mathcal{L}}{\partial w_0} &= \frac{-y}{\sigma(w_0 + \sum^{p}_{j=1}w_j x_j)}\sigma'(w_0 + \sum^{p}_{j=1}w_j x_j) + \frac{-y}{1-(\sigma(w_0 + \sum^{p}_{j=1}w_j x_j))}\sigma'(w_0 + \sum^{p}_{j=1}w_j x_j)\\
+    \frac{\partial \mathcal{L}}{\partial w_1} &=\frac{-y}{\sigma(w_0 + \sum^{p}_{j=1}w_j x_j)}\sigma'(w_0 + \sum^{p}_{j=1}w_j x_j) x_0+ \frac{-y}{1-(\sigma(w_0 + \sum^{p}_{j=1}w_j x_j))}\sigma'(w_0 + \sum^{p}_{j=1}w_j x_j) x_0\\ 
+    \frac{\partial \mathcal{L}}{\partial w_2} &=\frac{-y}{\sigma(w_0 + \sum^{p}_{j=1}w_j x_j)}\sigma'(w_0 + \sum^{p}_{j=1}w_j x_j) x_1+ \frac{-y}{1-(\sigma(w_0 + \sum^{p}_{j=1}w_j x_j))}\sigma'(w_0 + \sum^{p}_{j=1}w_j x_j) x_1
+\end{align}
 
+Knowing that $\sigma'(x) = \sigma (x)\cdot (1-\sigma(x))$, the equation can be simplified
+
+\begin{align}
+    \frac{\partial \mathcal{L}}{\partial w_0} &= -y + 2\sigma(w_0 + \sum^{p}_{j=1}w_j x_j)-y\sigma(w_0 + \sum^{p}_{j=1}w_j x_j)\\
+    \frac{\partial \mathcal{L}}{\partial w_1} &=x_0(-y + 2\sigma(w_0 + \sum^{p}_{j=1}w_j x_j)-y\sigma(w_0 + \sum^{p}_{j=1}w_j x_j))\\
+    \frac{\partial \mathcal{L}}{\partial w_2} &=x_1(-y + 2\sigma(w_0 + \sum^{p}_{j=1}w_j x_j)-y\sigma(w_0 + \sum^{p}_{j=1}w_j x_j))
+\end{align}
+\textbf{2) Briefly explain and motivate your implementation of the perceptron}
+The implementation of the perceptron predictor follows the convention of the scikit learn library. Regarding the detail, the initialisation of the weight vector is done at random. Note that to have reproducible result, the initial vector is fixed in the code. But in practice we will use a random generator. This will allows the algorithm to reach a better result faster and not introduce some bias. For the training, we use epoch of size 5. Using epoch instead of a single data to update the weight allows our model to change less with outliers since they will be mitigated by the remaining date in that epoch. It is a way to limit overfitting.
+
+\textbf{1. Observe how the decision boundary is affected by the learning rate.}
+    \begin{enumerate}
+    \item See appendix for figures.
+    \item In general, for each value of $\eta$, we observe the same result. The main difference is the angle of the boundary between the two classes. However a huge difference is visible When the learning rate is to low, we can see that the prediction are very wrong. It comes from the fact that the weight vector is initialise with a big weight for the last component. It means that there is not enough data to converge to a good model given a small learning rate. We can see on the graph that starting from eta = 0.01, the result shift and predict correctly the data. From the decision boundary, we can see that the perceptron create a linear model. Furthermore, from the two last figures, we see that increasing the learning rate, decrease the uncertainty area(in white). It means that it start overfiting the data.
+    \end{enumerate}
+
+\textbf{2. Report the average test set accuracies over five generations of the dataset,
+along with the standard deviations, for each value of $\eta$.}\\
+
+As explain earlier, the model behave poorly for small learning rate but is rather good for bigger learning rate. 
+We can also see from the standard deviation that the best value seams to be a learning rate of 0.01 because it has the smallest variance after that, the variance increase which means the model start to overfit.
+
+\begin{table}[H]
+    \centering
+    \caption{Accuracy and Standard Deviation of the perceptron}
+    \begin{tabular}{|c|c|c|}
+    \hline
+     learning rate($\eta$) & Average Accuracy & Standard Deviation \\
+    \hline
+    0.0001 & 8,61\% & 0.0016 \\
+    0.0005 & 9,21\% & 0.0026 \\
+    0.001 & 11,3\% & 0.0077 \\
+    0.01 & 92.8\% & 0.0015 \\
+    0.1 & 92.37\% & 0.0059 \\
+    \hline
+    \end{tabular}
+    \end{table}
 \section{Method comparison}
 \begin{enumerate}
     \item Cross-validation is a robust method for tuning hyperparameters. \\
@@ -153,8 +176,8 @@ Finally, by distributing the denominators in parenthesis and simplifying, we get
     Also, we can see the parameter $n$ lowering to 11.\\
     The effect of the noisy points diminishes with $n$ diminishing because they are likely to be outnumbered by correctly labeled data in the majority of neighborhoods.\\
     Knn is high in ranking in case of noisy data.
-    \item 
-
+    \item \textbf{Perceptron}:
+    In the case of the perceptron, we can see that it is the best model in both cases in terms of accuracy. It is expected as the perceptron fit a linear model on our data and in the case of 2 Gaussians, the best model is linear. However when regarding the variance, knn is better. It can be explain by the fact that knn make an average of its neighbors and thus is more stable with less variance. Regarding the effect of adding 200 irrelevant data, we can see that it changes the best learning rate computed by cross validation an decrease the quality of the model. It was expected as adding noise to our training data will surely make our model learn bad examples and thus decrease the efficiency. 
 
 \end{enumerate}
 \begin{table}[H]
@@ -168,7 +191,7 @@ Finally, by distributing the denominators in parenthesis and simplifying, we get
     \hline
     dt & 4 & 91.67\% & 0.0029 & 2 & 89.79\% & 0.0074\\
     knn & n=44 & 92.6\% & 0.0012 & n=11 & 92.3\% & 0.0018\\
-    perceptron & 91.72\% & 0.0029 & 85.59\% & 0.0141 & 85.59\% & 0.0141\\
+    perceptron & $\eta$ = 0.01 &  92.8\% & 0.0015 & $\eta$ = 0.1 & 92.37\% & 0.0059\\
     \hline
     \end{tabular}
 \end{table}
@@ -236,5 +259,37 @@ Finally, by distributing the denominators in parenthesis and simplifying, we get
     \includegraphics[width=0.75\linewidth]{knn/knn_500.pdf}
     \caption{n = 500}
 \end{figure}
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{perceptron/perceptron_learning_rate=0.0001.pdf}
+    \caption{learning rate ($\eta$) = 0.0001}
+\end{figure}
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{perceptron/perceptron_learning_rate=0.0005.pdf}
+    \caption{learning rate ($\eta$) = 0.0005}
+\end{figure}
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{perceptron/perceptron_learning_rate=0.0010.pdf}
+    \caption{learning rate ($\eta$) = 0.001}
+\end{figure}
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{perceptron/perceptron_learning_rate=0.0100.pdf}
+    \caption{learning rate ($\eta$) = 0.01}
+\end{figure}
+
+\begin{figure}[H]
+    \centering  
+    \includegraphics[width=0.75\linewidth]{perceptron/perceptron_learning_rate=0.1000.pdf}
+    \caption{learning rate ($\eta$) = 0.1}
+\end{figure}
+
+
 
 \end{document}
