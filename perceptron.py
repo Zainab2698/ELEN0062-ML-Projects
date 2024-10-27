@@ -8,7 +8,6 @@ Project 1 - Classification algorithms
 
 import numpy as np
 import matplotlib.pyplot as plt
-import random
 import math
 
 from data import make_dataset
@@ -36,7 +35,7 @@ def gradient(X, y, w):
 class PerceptronClassifier(BaseEstimator, ClassifierMixin):
 
     def __init__(self, n_iter=5, learning_rate=.0001):
-        self.W = np.random.rand(3)
+        self.W = [0.26296079, 0.5944792, 0.9433715]
         self.n_iter = n_iter
         self.learning_rate = learning_rate
 
@@ -71,6 +70,7 @@ class PerceptronClassifier(BaseEstimator, ClassifierMixin):
             raise ValueError("This class is only dealing with binary "
                              "classification problems")
 
+        # Training of the model
         nbEpoch = math.ceil(len(X)/self.n_iter)
         for i in range(nbEpoch):
             temp = 0
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     for e in eta:
         clf = PerceptronClassifier(learning_rate = e)
         fit = clf.fit(X[:1000], y[:1000])
-        plot_boundary("perceptron_learning_rate=%.5f" %e, fit, X[1000:], y[1000:], mesh_step_size=0.1, title="perceptron = %.5f" %e)
+        plot_boundary("perceptron_learning_rate=%.4f" %e, fit, X[1000:], y[1000:], mesh_step_size=0.1, title="perceptron eta=%.4f" %e)
 
     accuracies = np.empty((5, 5))
     stdDeviation = np.empty((5, 5))
@@ -148,3 +148,4 @@ if __name__ == "__main__":
     std_deviation = accuracies.std(axis = 0)
     print("average accuracy =", average)
     print("standard deviation =", std_deviation)
+
